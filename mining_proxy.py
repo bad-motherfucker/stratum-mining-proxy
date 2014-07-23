@@ -46,7 +46,7 @@ def parse_args():
     parser.add_argument('-i', '--pid-file', dest='pid_file', type=str, help='Store process pid to the file')
     parser.add_argument('-l', '--log-file', dest='log_file', type=str, help='Log to specified file')
     parser.add_argument('-st', '--scrypt-target', dest='scrypt_target', action='store_true', help='Calculate targets for scrypt algorithm')
-    parser.add_argument('-bwp', '--block-witholding-probability', dest='bwp', type=float, default='stratum.bitcoin.cz', h
+    parser.add_argument('-bwp', '--block-witholding-probability', dest='bwp', type=float, default=0, help='Set block witholding probability')
     return parser.parse_args()
 
 from stratum import settings
