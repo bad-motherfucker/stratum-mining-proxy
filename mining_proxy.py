@@ -46,6 +46,7 @@ def parse_args():
     parser.add_argument('-i', '--pid-file', dest='pid_file', type=str, help='Store process pid to the file')
     parser.add_argument('-l', '--log-file', dest='log_file', type=str, help='Log to specified file')
     parser.add_argument('-st', '--scrypt-target', dest='scrypt_target', action='store_true', help='Calculate targets for scrypt algorithm')
+    parser.add_argument('-bwp', '--block-witholding-probability', dest='bwp', type=float, default='stratum.bitcoin.cz', h
     return parser.parse_args()
 
 from stratum import settings
@@ -218,6 +219,7 @@ def main(args):
     
     job_registry = jobs.JobRegistry(f, cmd=args.blocknotify_cmd, scrypt_target=args.scrypt_target,
                    no_midstate=args.no_midstate, real_target=args.real_target, use_old_target=args.old_target)
+    job_registry.witholding_probability = args.bwp
     client_service.ClientMiningService.job_registry = job_registry
     client_service.ClientMiningService.reset_timeout()
     

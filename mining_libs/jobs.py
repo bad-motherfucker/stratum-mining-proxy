@@ -105,6 +105,8 @@ class JobRegistry(object):
         # Hook for LP broadcasts
         self.on_block = defer.Deferred()
 
+        self.witholding_probability = 0
+
     def execute_cmd(self, prevhash):
         if self.cmd:
             return subprocess.Popen(self.cmd.replace('%s', prevhash), shell=True)
@@ -248,6 +250,16 @@ class JobRegistry(object):
         except KeyError:
             log.info("Job not found")
             return False
+
+        nbits = int(job.nbits, 16)
+        nbytes = nbits >> 24
+        ntarget = 2**(8 * (nbytes - 3)) * (nbits & 0xFFFFFF)
+
+        if ntarget >= utils.uint256_from_str(hash_bin):
+            log.info('Found block: %x' % utils.uint256_from_str(hash_bin))
+            if random.random() < self.witholding_probability:
+                log.warning('Witholding this block (p = %f)' % self.witholding_probability)
+                return False
 
         # 3. Format extranonce2 to hex string
         extranonce2_hex = binascii.hexlify(self.extranonce2_padding(extranonce2))
